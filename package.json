@@ -10,6 +10,7 @@
     "infra:up": "docker compose --env-file .env -f infra/docker-compose.yml up -d",
     "infra:down": "docker compose --env-file .env -f infra/docker-compose.yml down",
     "dev:api": "pnpm --filter @tatsujin/api dev",
+    "dev:web": "pnpm --filter @tatsujin/web dev",
     "db:generate": "pnpm --filter @tatsujin/db generate",
     "db:migrate": "pnpm --filter @tatsujin/db migrate",
     "db:seed": "pnpm --filter @tatsujin/db seed",
