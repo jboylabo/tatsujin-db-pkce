@@ -88,5 +88,12 @@ pnpm dev:api      # http://localhost:3000
 pnpm dev:web      # http://localhost:5173 （/api と /auth を api にproxy）
 ```
 - ブラウザで http://localhost:5173 を開き「ログイン」。ユーザーは `alice`（ACME）/ `bob`（GLOBEX）、パスワードは `.env` の `TEST_USER_PASSWORD`
-- FE は React 19 + Vite + TanStack Query/Router。React Compiler（babel-plugin-react-compiler）を有効化しており、`useMemo`/`useCallback`/`memo` は手書きしない。`useEffect` は使用しない
+- FE は React 19 + Vite + Mantine 9 + TanStack Query/Router。React Compiler（babel-plugin-react-compiler）を有効化しており、`useMemo`/`useCallback`/`memo` は手書きしない。`useEffect` は使用しない
 - テスト: `pnpm test` / 型: `pnpm typecheck` / lint: `pnpm lint`
+
+# 画面と機能（FE）
+- **ダッシュボード**: 部署数・社員数・平均年齢、ログインユーザー情報
+- **部署**: 一覧（検索・並び替え・社員数）、追加/編集（モーダル）、削除（確認あり。社員がいる部署は削除不可）
+- **社員**: 全社員一覧（検索・部署フィルタ・並び替え）、部署別一覧、追加/編集/削除、詳細（子の追加・削除）
+- **共通**: ライト/ダーク/システム切替、モバイル対応のナビ、読み込み中の Skeleton、空状態、エラー時の再試行、操作結果の通知
+- 入力検証は API と同じ zod スキーマ（`packages/shared`）をフォームでも使用（日本語メッセージ）
