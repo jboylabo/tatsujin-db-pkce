@@ -1,0 +1,26 @@
+{
+  "name": "tatsujin-db-pkce",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "env:init": "sh scripts/init-env.sh",
+    "infra:up": "docker compose --env-file .env -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose --env-file .env -f infra/docker-compose.yml down",
+    "dev:api": "pnpm --filter @tatsujin/api dev",
+    "db:generate": "pnpm --filter @tatsujin/db generate",
+    "db:migrate": "pnpm --filter @tatsujin/db migrate",
+    "db:seed": "pnpm --filter @tatsujin/db seed",
+    "lint": "biome check .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.7",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
