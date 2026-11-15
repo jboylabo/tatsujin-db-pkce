@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
-import type { ChildInput, Me } from '@tatsujin/shared'
+import type { ChildInput, DepartmentInput, EmployeeInput, Me } from '@tatsujin/shared'
 
 export type Department = { deptCode: string; name: string }
 export type Child = { seq: number; name: string }
@@ -41,6 +41,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T)
 }
 
+const enc = encodeURIComponent
+const json = (method: string, body: unknown) => ({ method, body: JSON.stringify(body) })
+
+// ---- queries ----
 export const meQuery = queryOptions({
   queryKey: ['me'],
   queryFn: () => request<Me>('/api/me'),
@@ -51,25 +55,49 @@ export const departmentsQuery = queryOptions({
   queryFn: () => request<Department[]>('/api/departments'),
 })
 
+/** 全社員(自社)。部署別も同じ一覧からフィルタできるが、サーバ側絞り込み版も用意する */
+export const allEmployeesQuery = queryOptions({
+  queryKey: ['employees', 'all'],
+  queryFn: () => request<Employee[]>('/api/employees'),
+})
+
 export const employeesQuery = (deptCode: string) =>
   queryOptions({
     queryKey: ['employees', { deptCode }],
-    queryFn: () => request<Employee[]>(`/api/employees?deptCode=${encodeURIComponent(deptCode)}`),
+    queryFn: () => request<Employee[]>(`/api/employees?deptCode=${enc(deptCode)}`),
   })
 
 export const employeeQuery = (employeeId: string) =>
   queryOptions({
     queryKey: ['employee', employeeId],
-    queryFn: () => request<EmployeeDetail>(`/api/employees/${encodeURIComponent(employeeId)}`),
+    queryFn: () => request<EmployeeDetail>(`/api/employees/${enc(employeeId)}`),
   })
 
+// ---- mutations: departments ----
+export const createDepartment = (input: DepartmentInput) =>
+  request<Department>('/api/departments', json('POST', input))
+
+export const updateDepartment = (deptCode: string, input: { name: string }) =>
+  request<Department>(`/api/departments/${enc(deptCode)}`, json('PUT', input))
+
+export const deleteDepartment = (deptCode: string) =>
+  request<void>(`/api/departments/${enc(deptCode)}`, { method: 'DELETE' })
+
+// ---- mutations: employees ----
+export const createEmployee = (input: EmployeeInput) =>
+  request<Employee>('/api/employees', json('POST', input))
+
+export const updateEmployee = (
+  employeeId: string,
+  input: { name: string; birthDate: string; deptCode: string },
+) => request<Employee>(`/api/employees/${enc(employeeId)}`, json('PUT', input))
+
+export const deleteEmployee = (employeeId: string) =>
+  request<void>(`/api/employees/${enc(employeeId)}`, { method: 'DELETE' })
+
+// ---- mutations: children ----
 export const addChild = (employeeId: string, input: ChildInput) =>
-  request<Child>(`/api/employees/${encodeURIComponent(employeeId)}/children`, {
-    method: 'POST',
-    body: JSON.stringify(input),
-  })
+  request<Child>(`/api/employees/${enc(employeeId)}/children`, json('POST', input))
 
 export const removeChild = (employeeId: string, seq: number) =>
-  request<void>(`/api/employees/${encodeURIComponent(employeeId)}/children/${seq}`, {
-    method: 'DELETE',
-  })
+  request<void>(`/api/employees/${enc(employeeId)}/children/${seq}`, { method: 'DELETE' })

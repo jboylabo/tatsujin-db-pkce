@@ -6,6 +6,7 @@ import {
   Outlet,
   type RouterHistory,
 } from '@tanstack/react-router'
+import { AllEmployeesPage } from './features/AllEmployeesPage.tsx'
 import { DepartmentsPage } from './features/DepartmentsPage.tsx'
 import { EmployeeDetailPage } from './features/EmployeeDetailPage.tsx'
 import { EmployeesPage } from './features/EmployeesPage.tsx'
@@ -59,6 +60,12 @@ const employeesRoute = createRoute({
   component: EmployeesPage,
 })
 
+const allEmployeesRoute = createRoute({
+  getParentRoute: () => authedRoute,
+  path: '/employees',
+  component: AllEmployeesPage,
+})
+
 const employeeRoute = createRoute({
   getParentRoute: () => authedRoute,
   path: '/employees/$employeeId',
@@ -67,7 +74,7 @@ const employeeRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
-  authedRoute.addChildren([departmentsRoute, employeesRoute, employeeRoute]),
+  authedRoute.addChildren([departmentsRoute, employeesRoute, allEmployeesRoute, employeeRoute]),
 ])
 
 export function createAppRouter(queryClient: QueryClient, history?: RouterHistory) {
