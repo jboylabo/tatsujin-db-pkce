@@ -78,3 +78,15 @@
 6. テスト（PKCE検証失敗・他社アクセス拒否を含む）とREADME
 - 各フェーズ完了ごとに止まり、動作確認手順と結果を報告すること
 - 秘密情報は .env に置き、.env.example を用意する
+# 起動手順（開発）
+```sh
+pnpm install
+pnpm env:init     # ランダムな秘密値で .env を生成（git管理外）。5432使用中なら POSTGRES_PORT=5433 pnpm env:init
+pnpm infra:up     # Postgres + Keycloak
+pnpm db:migrate && pnpm db:seed
+pnpm dev:api      # http://localhost:3000
+pnpm dev:web      # http://localhost:5173 （/api と /auth を api にproxy）
+```
+- ブラウザで http://localhost:5173 を開き「ログイン」。ユーザーは `alice`（ACME）/ `bob`（GLOBEX）、パスワードは `.env` の `TEST_USER_PASSWORD`
+- FE は React 19 + Vite + TanStack Query/Router。React Compiler（babel-plugin-react-compiler）を有効化しており、`useMemo`/`useCallback`/`memo` は手書きしない。`useEffect` は使用しない
+- テスト: `pnpm test` / 型: `pnpm typecheck` / lint: `pnpm lint`
