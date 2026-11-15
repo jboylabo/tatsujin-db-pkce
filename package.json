@@ -14,6 +14,7 @@
     "db:generate": "pnpm --filter @tatsujin/db generate",
     "db:migrate": "pnpm --filter @tatsujin/db migrate",
     "db:seed": "pnpm --filter @tatsujin/db seed",
+    "db:studio": "pnpm --filter @tatsujin/db studio",
     "lint": "biome check .",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test"
